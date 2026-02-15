@@ -1,4 +1,5 @@
 langgraph
+langchain_openai
 fastapi
 numpy
 uvicorn
