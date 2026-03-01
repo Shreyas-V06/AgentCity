@@ -1,4 +1,5 @@
 VECTORIZE_POLICY_PROMPT = """
+
 # Role
 Analyze the provided policy text and decompose its nature into a multi-dimensional impact vector.
 
@@ -10,12 +11,13 @@ Analyze the provided policy text and decompose its nature into a multi-dimension
 
 # Task
 Evaluate the "Intent" and "Inherent Impact" of the policy for each dimension. 
-- A dimension should only have a high weight if the policy explicitly targets or significantly disrupts that area.
-- Most policies are "narrow"; if a dimension is completely irrelevant, the valuemust be near 1.
+- A dimension should only have a high weight if the policy is relevant to that dimension or significantly disrupts that area.
+- if a dimension is completely irrelevant, the value must be near 0.000.
+- if a dimension is relevant , the value must be near 1.000
 
 # Constraints
-1. Granularity: Avoid round numbers (e.g., 50, 60, 75). Provide high-precision, unique integers.
-2. Range: 1-100.
+1. Provide high-precision, unique float values with atleast three significant digits after decimal point. (eg. 0.312 , 0.411)
+2. Range: 0 to 1.
 
 # Policy
 {policy_text}

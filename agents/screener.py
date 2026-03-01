@@ -40,7 +40,9 @@ class AgentScreener:
         sorted_indices = top_k_idx[np.argsort(scores[top_k_idx])[::-1]]
 
         return {agent_ids[i]: float(scores[i]) for i in sorted_indices}
-    
+
+
+# EXAMPLE USAGE:
 # config = ScreenConfig(policy_weight={'entertainment': 0.9, 'tax': 0.1, ...})
 # screener = AgentScreener(config)
 # top_agents = screener.screen_agents()
