@@ -1,0 +1,54 @@
+from typing import List, Literal
+from schemas.events import Event, EventBase
+from utils.object_creators import generate_event_objects
+from llm.factory import LLMConfig, LLMFactory, LLMProvider
+from prompts import EVENT_GENERATOR_PROMPT
+
+
+def create_event_objects(
+    policy_text: str,
+    event_type: Literal['DIRECT', 'INDIRECT', 'INFLUENCED'],
+    timeline: Literal['L1', 'L2', 'L3'],
+    agent_details: str
+) -> List[Event]:
+    """
+    Generate Event objects based on a policy using GROQ LLM with structured output.
+    
+    Args:
+        policy_text: The policy text to analyze for event generation
+        event_type: Type of event - 'DIRECT', 'INDIRECT', or 'INFLUENCED'
+        timeline: Timeline scope - 'L1' (1 week-1 month), 'L2' (1 year), or 'L3' (3+ years)
+        agent_details: Details about the agents affected by the policy
+    
+    Returns:
+        A list of Event objects representing the policy's impact moments
+    """
+
+    config = LLMConfig(
+        provider=LLMProvider.GROQ,
+        model_name="llama-3.3-70b-versatile",
+        temperature=0.7
+    )
+    llm = LLMFactory.build(config)
+    
+
+    structured_llm = llm.with_structured_output(EventBase)
+
+    formatted_prompt = EVENT_GENERATOR_PROMPT.format(
+        event_type=event_type,
+        timeline=timeline,
+        agent_details=agent_details,
+        policy_text=policy_text
+    )
+    
+
+    event_base = structured_llm.invoke(formatted_prompt)
+    
+  
+    events = generate_event_objects(
+        event_base=event_base,
+        event_type=event_type,
+        timeline=timeline
+    )
+    
+    return events

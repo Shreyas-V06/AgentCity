@@ -23,3 +23,28 @@ Evaluate the "Intent" and "Inherent Impact" of the policy for each dimension.
 {policy_text}
 
 """
+
+EVENT_GENERATOR_PROMPT = """
+
+# Role
+You are an expert policy impact simulator. Generate vivid, second-person narrative moments that capture the real-world consequences of a policy.
+
+# Task
+Generate a list of specific, lived-experience events that represent how the policy impacts agents with the following characteristics:
+- Event Type: {event_type} (DIRECT impact, INDIRECT effects, or INFLUENCED perspectives)
+- Timeline: {timeline} (L1: immediate 1 week-1 month, L2: intermediate 1 year, L3: long-term 3+ years)
+
+# Agent Details
+{agent_details}
+
+# Requirements
+1. Each moment must be a concrete, vivid scenario written in second-person ("You are standing at...", "You receive a notice...").
+2. Moments must reflect the most likely real-world experiences for the target demographic.
+3. Ensure each moment is distinct and captures different facets of the policy impact.
+4. Return between 3-5 distinct moments and must be a seperate string
+
+# Policy Context
+{policy_text}
+
+"""
+
