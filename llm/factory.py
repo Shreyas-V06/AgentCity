@@ -11,10 +11,12 @@ class LLMProvider(str, Enum):
     GOOGLE = "google"
     GROQ = "groq"
 
-class LLMConfig(BaseModel):
-    provider: LLMProvider
-    model_name: str
-    temperature: float
+class LLMConfig():
+    def __init__(self, provider: LLMProvider, model_name: str, temperature: float = 0.7, timeout: float = 60.0):
+        self.provider = provider
+        self.model_name = model_name
+        self.temperature = temperature
+        self.timeout = timeout
 
 class LLMFactory:    
     @staticmethod
@@ -24,21 +26,21 @@ class LLMFactory:
                 model=config.model_name,
                 temperature=config.temperature,
                 api_key=os.getenv("OPENAI_API_KEY"),
-                timeout=30.0
+                timeout=config.timeout
             )
         elif config.provider == LLMProvider.GOOGLE:
             return ChatGoogleGenerativeAI(
                 model=config.model_name,
                 temperature=config.temperature,
                 api_key=os.getenv("GOOGLE_API_KEY"),
-                timeout=30.0
+                timeout=config.timeout
             )
         elif config.provider == LLMProvider.GROQ:
             return ChatGroq(
                 model_name=config.model_name,
                 temperature=config.temperature,
                 api_key=os.getenv("GROQ_API_KEY"),
-                timeout=30.0
+                timeout=config.timeout
             )
         else:
             raise ValueError(f"Provider {config.provider} not supported.")

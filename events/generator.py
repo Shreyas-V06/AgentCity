@@ -1,16 +1,11 @@
-from typing import List, Literal
-from schemas.events import Event, EventBase
-from utils.object_creators import generate_event_objects
+from typing import List
+from schemas.events import Event, EventList
+from utils.general import generate_event_objects
 from llm.factory import LLMConfig, LLMFactory, LLMProvider
 from prompts import EVENT_GENERATOR_PROMPT
 
 
-def create_event_objects(
-    policy_text: str,
-    event_type: Literal['DIRECT', 'INDIRECT', 'INFLUENCED'],
-    timeline: Literal['L1', 'L2', 'L3'],
-    agent_details: str
-) -> List[Event]:
+def create_event_objects(policy_text: str, agent_details: str) -> List[Event]:
     """
     Generate Event objects based on a policy using GROQ LLM with structured output.
     
@@ -30,25 +25,14 @@ def create_event_objects(
         temperature=0.7
     )
     llm = LLMFactory.build(config)
-    
-
-    structured_llm = llm.with_structured_output(EventBase)
-
+    structured_llm = llm.with_structured_output(EventList)
     formatted_prompt = EVENT_GENERATOR_PROMPT.format(
-        event_type=event_type,
-        timeline=timeline,
         agent_details=agent_details,
         policy_text=policy_text
     )
-    
-
-    event_base = structured_llm.invoke(formatted_prompt)
-    
-  
+    event_list = structured_llm.invoke(formatted_prompt)
     events = generate_event_objects(
-        event_base=event_base,
-        event_type=event_type,
-        timeline=timeline
+        event_list=event_list
     )
     
     return events

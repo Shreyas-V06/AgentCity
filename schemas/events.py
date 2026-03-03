@@ -4,46 +4,76 @@ from typing import Literal,List
 class Event:
     """
     Represents a specific simulation moment where a policy impacts a citizen.
-    
+
+    Fields:
+    - event_id: A unique identifier for the event.
+    - event_description: A second-person narrative moment of the situation agent is part of (e.g., 'You are standing at the bus stop...').
+    - timeline: Specifies the time frame in which the event's impact is observed.
+    - agent_id: A unique identifier for the agent experiencing the event, linking the event to a specific agent profile.
+    """
+    event_id: str
+    event_description: List[str]
+    timeline: Literal['L1', 'L2', 'L3']
+    agent_id: str
+
+    def __init__(
+        self,
+        event_id: str,
+        event_description: List[str],
+        timeline: Literal['L1', 'L2', 'L3'],
+        agent_id: str
+    ):
+        self.event_id = event_id
+        self.event_description = event_description
+        self.timeline = timeline
+        self.agent_id = agent_id
+
+
+
+class EventBase(BaseModel):
+    """
+    Represents a specific simulation moment where a policy impacts a citizen.
+
     Fields:
     - event_description: A second-person narrative moment of the situation agent is part of(e.g., 'You are standing at the bus stop...')
 
-    - event_type: 
-        - 'DIRECT': Direct policy impact on the agent.
-        - 'INDIRECT': Secondary effects (e.g., family/friends affected).
-        - 'INFLUENCED': Changes in social opinion or community "vibe".
-    
     - timeline: 
         - 'L1': Immediate (1 Week - 1 Month).
         - 'L2': Intermediate (1 Year).
         - 'L3': Long-term / Generational (3 Years+).
+        Description: Specifies the time frame in which the event's impact is observed.
+
+    - agent_id: A unique identifier for the agent experiencing the event, linking the event to a specific agent profile.
     """
-    event_description: str
-    event_type: Literal['DIRECT', 'INDIRECT', 'INFLUENCED']
-    timeline: Literal['L1', 'L2', 'L3']
-
-    def __init__(
-        self, 
-        event_description: str, 
-        event_type: Literal['DIRECT', 'INDIRECT', 'INFLUENCED'], 
-        timeline: Literal['L1', 'L2', 'L3']
-    ):
-        self.event_description = event_description
-        self.event_type = event_type
-        self.timeline = timeline
-
-
-class EventBase(BaseModel):
-
-    event_description: List[str] = Field(
+    event_description:str = Field(
         ...,
         description=(
-            "A list of vivid, second-person 'Moments' representing a direct and highly probable consequence of the "
+            "A vivid, second-person 'event' representing a direct and highly probable consequence of the "
             "implemented policy. It must be an immediate, lived experience "
             "rather than a general opinion. The moment must be the most likely scenario "
             "faced by the specific agents involved, providing clear emotional and situational data "
             "for the sentiment evaluator to calculate state shifts."
-            "Each moment should be a separate string object"
         )
+    )
+    timeline: Literal['L1', 'L2', 'L3'] = Field(
+        ...,
+        description="Specifies the time frame in which the event's impact is observed."
+    )
+    agent_id: str = Field(
+        ...,
+        description="A unique identifier for the agent experiencing the event, linking the event to a specific agent profile."
+    )
+
+
+class EventList(BaseModel):
+    """
+    Represents a collection of EventBase objects.
+
+    Fields:
+    - events: A list of EventBase objects.
+    """
+    events: List[EventBase] = Field(
+        default_factory=list,
+        description="A list of EventBase objects representing multiple simulation moments."
     )
 
