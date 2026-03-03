@@ -6,7 +6,7 @@ load_dotenv()
 def initialize_db():
     connection_string=os.getenv('CONNECTION_STRING')
     client=MongoClient(connection_string)
-    database=client.klh
+    database=client.agentcity
     return database
 
 #USAGE:
