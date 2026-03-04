@@ -21,6 +21,12 @@ class AgentScreener:
         self.config = config
 
     def screen_agents(self) -> List[str]:
+        """
+        Selects TOP-K agents relevant for simulation
+        It does so based on dot product of Policy vector with 
+        agent vector.
+        
+        """
         with open(self.config.profile_path, 'r') as f:
             profiles = json.load(f)
 

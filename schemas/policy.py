@@ -4,6 +4,8 @@ class PolicyWeight(BaseModel):
     """
     Schema representing the magnitude of a policy across 
     economic, city-wide, human, and social dimensions.
+
+    These are the dimensions of a Policy Vector
     """
     # Economy Cluster
     tax: float = 0.0

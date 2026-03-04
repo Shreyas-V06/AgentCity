@@ -45,6 +45,7 @@ class EventBase(BaseModel):
 
     - agent_id: A unique identifier for the agent experiencing the event, linking the event to a specific agent profile.
     """
+    
     event_description:str = Field(
         ...,
         description=(
