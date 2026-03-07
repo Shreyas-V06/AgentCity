@@ -6,7 +6,7 @@ from prompts import EVENT_GENERATOR_PROMPT
 
 #TODO:Create a proper abstraction for event generator which calls create_event_object in batches
 
-def create_event_objects(policy_text: str, agent_details: str) -> List[Event]:
+def create_event_objects(llm,policy_text: str, agent_details: str) -> List[Event]:
     """
     Generate Event objects based on a policy using structured output.
     
@@ -23,13 +23,6 @@ def create_event_objects(policy_text: str, agent_details: str) -> List[Event]:
     """
 
     #LLM for event creation 
-    config = LLMConfig(
-        provider=LLMProvider.GROQ,
-        model_name="llama-3.3-70b-versatile",
-        temperature=0.7
-    )
-    llm = LLMFactory.build(config)
-
     structured_llm = llm.with_structured_output(EventList)
     formatted_prompt = EVENT_GENERATOR_PROMPT.format(
         agent_details=agent_details,
