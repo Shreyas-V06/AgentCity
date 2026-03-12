@@ -4,3 +4,4 @@ fastapi
 numpy
 uvicorn
 pymongo
+redis

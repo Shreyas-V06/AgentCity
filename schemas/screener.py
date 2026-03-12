@@ -1,7 +1,7 @@
 from typing import Dict, List
 import numpy as np
 import json 
-from db import initialize_db
+from db import initialize_db, initialize_redis
 
 class ScreenConfig:
     """
@@ -32,11 +32,19 @@ class AgentScreener:
 
         db = initialize_db()
         agents_collection = db['agents']
+        redis_client = initialize_redis()
         if profiles:
+            try:
+                pipe = redis_client.pipeline()
+                for agent in profiles:
+                    pipe.set(f"agent:{agent['agent_id']}", json.dumps(agent))
+                pipe.execute()
+            except Exception as e:
+                print(f"Error inserting agents into Redis: {e}")
             try:
                 agents_collection.insert_many(profiles)
             except Exception as e:
-                print(f"Error inserting agents into database: {e}")
+                print(f"Error inserting agents into MongoDB: {e}")
 
         agent_ids = []
         weight_list = []
