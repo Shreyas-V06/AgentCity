@@ -1,7 +1,8 @@
 import uuid
 from schemas.events import Event, EventList
 from typing import List
-from db import initialize_db
+import json
+from db import initialize_redis
 
 def generate_event_objects(event_list: EventList) -> List[Event]:
     """
@@ -28,25 +29,27 @@ def generate_event_objects(event_list: EventList) -> List[Event]:
 
 def generate_agent_details_string(agent_ids: List[str]) -> str:
     """
-    Fetches agent details from the database for the given list of agent_ids
+    Fetches agent details from Redis for the given list of agent_ids
     and returns them as a formatted string.
     """
-    db = initialize_db()
-    agents_collection = db['agents']
-    
-    # Fetch all agents matching the provided IDs
-    agents_cursor = agents_collection.find({"agent_id": {"$in": agent_ids}})
-    
+    redis_client = initialize_redis()
+
+    keys = [f"agent:{agent_id}" for agent_id in agent_ids]
+    raw_values = redis_client.mget(keys)
+
     formatted_details = []
-    
-    for agent in agents_cursor:
+
+    for raw in raw_values:
+        if raw is None:
+            continue
+        agent = json.loads(raw)
         agent_str = f"Agent ID: {agent.get('agent_id')}\n"
         for key, value in agent.items():
-            if key not in ['_id', 'agent_id']:
+            if key != 'agent_id':
                 agent_str += f"{key}: {value}\n"
         formatted_details.append(agent_str)
-        
-    return "\n" + "\n".join(formatted_details) + "\n" +  "\n"
+
+    return "\n" + "\n".join(formatted_details) + "\n" + "\n"
 
 
 def print_events(eventlist):
@@ -63,3 +66,11 @@ def print_events(eventlist):
         desc = " ".join(event.event_description) if isinstance(event.event_description, list) else event.event_description
         print(f"  Description: {desc}")
         print("-" * 50)
+
+def print_base_reactions(reactions):
+    for i, r in enumerate(reactions, 1):
+        print(f"--- Reaction {i} ---")
+        print(f"Event ID : {r['event_id']}")
+        print(f"Agent ID : {r['agent_id']}")
+        print(f"Reaction : {r['base_reaction']}")
+        print()

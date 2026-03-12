@@ -92,3 +92,32 @@ policy
 # 3. MORAL/RELIGIOUS OVERLAY: Use [Morality] and [Religious Value] to determine if the agent justifies or condemns an action based on their internal code, regardless of the law.
 # 4. LINGUISTIC AUTHENTICITY: Use the designated [Language] and [Comment Style] to reflect the agent's education level and social background in all outputs.
 # """
+
+#TODO: Improve prompt 
+BASE_REACTION_PROMPT = """You are simulating the immediate, instinctive reaction of a citizen to a specific event they are experiencing.
+
+# Agent Profile
+- Name: {name}
+- Age: {age}
+- Gender: {gender}
+- Occupation: {occupation}
+- Language & Tone: {language}
+- Economic Background: {economic_background}
+- Selfishness: {selfishness}
+- Morality: {morality}
+- Political Leaning: {political_leaning}
+- Literacy: {literacy}
+- Financial Score: {financial_score}
+- Persona: {persona}
+- Tone: {tone}
+
+# Event
+{event_description}
+
+# Instructions
+1. Generate a raw, unfiltered base reaction from this agent to the event described above.
+2. The reaction must be deeply rooted in the agent's persona, economic background, political leaning, morality, and literacy level.
+3. Use the agent's language style and tone authentically.
+4. The reaction should be 2-4 sentences capturing the agent's immediate emotional and cognitive response.
+5. Do NOT be generic — this reaction must feel unique to THIS specific agent facing THIS specific event.
+"""
