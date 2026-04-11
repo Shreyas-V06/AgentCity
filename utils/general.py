@@ -74,3 +74,4 @@ def print_base_reactions(reactions):
         print(f"Agent ID : {r['agent_id']}")
         print(f"Reaction : {r['base_reaction']}")
         print()
+

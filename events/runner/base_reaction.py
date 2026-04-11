@@ -8,6 +8,7 @@ from db import initialize_redis
 from prompts import BASE_REACTION_PROMPT
 from schemas.events import Event
 
+#map reduce pattern
 
 class ReactionState(TypedDict):
     events: List[Event]
@@ -59,7 +60,8 @@ def _load_agent_and_react(state: SingleReactionState, llm) -> dict:
 
 
 def _fan_out_events(state: ReactionState) -> list:
-    """Fan out each event into a parallel branch with its agent data pre-loaded from Redis."""
+    """Fan out each event into a parallel branch with its agent data pre-loaded from Redis.
+    Raw value contains all the details of all the agents"""
     redis_client = initialize_redis()
     events = state["events"]
 

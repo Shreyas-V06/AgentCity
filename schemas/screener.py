@@ -15,7 +15,7 @@ class ScreenConfig:
 
 class AgentScreener:
     """
-    Sets up an AgentScreener with given configuration
+    Sets up an AgentScreener with given configuration, Stores all the agents into Database and Redis Server and returns the screened in agent Ids
     """
     def __init__(self, config: ScreenConfig):
         self.config = config
