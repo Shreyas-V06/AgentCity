@@ -9,9 +9,10 @@ class AgentMessage(BaseModel):
     content: str = Field(description="The message needed to be transferred.")
     is_ready_to_exit: bool = Field(description="Set to true if your last message concluded the conversation.")
 
-
 class SocialMediaPost(BaseModel):
     content: str = Field(description="The text content of the social media post.")
 
-
+class ChatWithAgent(BaseModel):
+    target_agent_id: str = Field(description="The agent_id of the person you want to have a conversation with.")
+    initial_intent: str = Field(description="What you want to discuss or achieve in this conversation.")
 
