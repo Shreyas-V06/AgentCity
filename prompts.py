@@ -41,7 +41,7 @@ Definition of an EVENT: An Event is a specific, localized, downstream situation 
 
 <instructions>
 
-1. Generate between 5-7 distinct narrative moments based on the <input_parameters>.
+1. Generate between 15-20 distinct narrative moments based on the <input_parameters>.
 2. Write strictly in the second-person present tense ("You are standing...", "You realize...").
 3. Ensure each moment is highly relavant to the Agent Profiles provided i.e There is a high probability for the event to be 
    experienced by the agent.

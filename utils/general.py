@@ -4,6 +4,7 @@ from typing import List
 import json
 from db import initialize_redis
 
+
 def generate_event_objects(event_list: EventList) -> List[Event]:
     """
     Generates a list of Event objects from a given list of EventBase objects.

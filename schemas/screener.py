@@ -62,6 +62,7 @@ class AgentScreener:
         top_k_idx = np.argpartition(scores, -k)[-k:]
         sorted_indices = top_k_idx[np.argsort(scores[top_k_idx])[::-1]]
 
+        #List of selected agent IDs
         return [agent_ids[i] for i in sorted_indices]
 
 

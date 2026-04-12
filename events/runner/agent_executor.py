@@ -97,38 +97,6 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
 
         return "end"
     
-    def route_after_tools(state: AgentExecutionState) -> Literal["agent", "end"]:
-        """
-        After tools execute, decide if we loop back to the agent or end.
-        
-        Terminating conditions:
-        - make_decision was just called
-        - post_social_media was just called
-        - chat_with_agent was called with end_conversation=True
-        - More than N tool calls have been made (safety limit)
-        """
-
-        tool_call_count = sum(1 for msg in state["messages"] if hasattr(msg, "tool_calls") and msg.tool_calls)
-        last_message = state["messages"][-1]
-        
-        if isinstance(last_message, ToolMessage):
-            tool_name = last_message.name
-            
-   
-            if tool_name in ["make_decision", "post_social_media"]:
-                state["termination_reason"] = tool_name
-                return "end"
-            
-     
-            if tool_name == "chat_with_agent":
-
-                if "concluded" in last_message.content.lower():
-                    state["termination_reason"] = "chat_concluded"
-                    return "agent"
-                else:
-                    return "agent"
-        
-        return "agent"
     
     # Build the state graph
     graph = StateGraph(AgentExecutionState)
@@ -140,7 +108,7 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
     # Add edges
     graph.add_edge(START, "agent")
     graph.add_conditional_edges("agent", should_continue, {"tools": "tools", "end": END})
-    graph.add_conditional_edges("tools", route_after_tools, {"agent": "agent", "end": END})
+    graph.add_edge("tools", END)
     
     return graph.compile()
 

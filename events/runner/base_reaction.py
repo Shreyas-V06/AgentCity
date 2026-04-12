@@ -9,7 +9,6 @@ from prompts import BASE_REACTION_PROMPT
 from schemas.events import Event
 
 #map reduce pattern
-
 class ReactionState(TypedDict):
     events: List[Event]
     results: Annotated[List[Dict[str, str]], operator.add]

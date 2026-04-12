@@ -4,8 +4,6 @@ from utils.general import generate_event_objects
 from llm.factory import LLMConfig, LLMFactory, LLMProvider
 from prompts import EVENT_GENERATOR_PROMPT
 
-#TODO:Create a proper abstraction for event generator which calls create_event_object in batches
-
 def create_event_objects(llm,policy_text: str, agent_details: str) -> List[Event]:
     """
     Generate Event objects based on a policy using structured output.
@@ -18,8 +16,6 @@ def create_event_objects(llm,policy_text: str, agent_details: str) -> List[Event
     
     Returns:
         A list of Event objects representing the policy's impact moments
-
-    NOTE: this method is supposed to be called in batches of agents, for token efficiency
     """
 
     #LLM for event creation 
