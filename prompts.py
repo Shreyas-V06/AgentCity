@@ -122,86 +122,6 @@ BASE_REACTION_PROMPT = """You are simulating the immediate, instinctive reaction
 5. Do NOT be generic — this reaction must feel unique to THIS specific agent facing THIS specific event.
 """
 
-CHAT_AGENT_INITIATE_PROMPT = """You are {agent_name}, talking to {target_name} about an important matter.
-
-# Your Profile
-- Occupation: {agent_occupation}
-- Language & Tone: {agent_language}
-- Persona: {agent_persona}
-- Your Political Leaning: {agent_political_leaning}
-- Your Morality: {agent_morality}
-- Your Selfishness: {agent_selfishness}
-
-# Context
-Recent Event: {event_description}
-Your Reaction: {agent_base_reaction}
-
-# Relationship
-Your relationship: {relation}
-
-# Your Intent
-{initial_intent}
-
-# Instructions
-1. You are initiating this conversation.
-2. Open the conversation naturally, based on your intent and your relationship with {target_name}.
-3. Keep your response to 2-3 sentences, in your authentic voice and language style.
-4. Output a JSON object with: {{"reply": "your message", "end_conversation": false}}
-5. Do NOT break character. Do NOT be overly formal unless that matches your persona.
-"""
-
-CHAT_AGENT_RESPOND_PROMPT = """You are {agent_name}, continuing a conversation with {target_name}.
-
-# Your Profile
-- Occupation: {agent_occupation}
-- Language & Tone: {agent_language}
-- Persona: {agent_persona}
-- Your Political Leaning: {agent_political_leaning}
-- Your Morality: {agent_morality}
-- Your Selfishness: {agent_selfishness}
-
-# Context
-Recent Event: {event_description}
-Your Reaction: {agent_base_reaction}
-
-# Conversation So Far
-{conversation_history}
-
-# Instructions
-1. Respond to what {target_name} just said.
-2. Keep your response to 2-3 sentences.
-3. Use your authentic voice and language style.
-4. Decide if this conversation has reached a natural conclusion. If it has (you've made your point, reached agreement/disagreement, or topic is exhausted), set end_conversation to true.
-5. Output a JSON object with: {{"reply": "your message", "end_conversation": true/false}}
-6. Do NOT break character.
-"""
-
-CHAT_TARGET_RESPOND_PROMPT = """You are role-playing as {target_name} in a conversation with {agent_name}.
-
-# Target Profile
-- Occupation: {target_occupation}
-- Language & Tone: {target_language}
-- Persona: {target_persona}
-- Political Leaning: {target_political_leaning}
-- Morality: {target_morality}
-- Selfishness: {target_selfishness}
-- Relationship to {agent_name}: {relation}
-
-# Context
-Recent Event: {event_description}
-
-# Conversation So Far
-{conversation_history}
-
-# Instructions
-1. You are responding as {target_name} to what {agent_name} just said.
-2. Your response must be consistent with your persona and your relationship with {agent_name}.
-3. Keep your response to 2-3 sentences.
-4. Use your authentic voice and language style.
-5. Decide if this conversation has reached a natural conclusion. If it has (you've stated your position, reached agreement/disagreement, or the topic is exhausted), set end_conversation to true.
-6. Output a JSON object with: {{"reply": "your message", "end_conversation": true/false}}
-7. Do NOT be overly polite or helpful if it conflicts with your character. Stay true to your persona.
-"""
 
 # Agent Execution Prompt
 AGENT_EXECUTION_PROMPT = """You are {agent_name}, an autonomous agent navigating a recent event that affects your life.
@@ -226,7 +146,7 @@ You can reach out to the following people:
 You can take one of the following actions:
 1. **Make a Decision**: Use the `make_decision` tool to decide on a concrete course of action and your reasoning.
 2. **Post on Social Media**: Use the `post_social_media` tool to share your thoughts publicly.
-3. **Chat with Another Agent**: Use the `chat_with_agent` tool to have a conversation with one of your contacts about this event. Provide their agent_id from the contact list above.
+
 
 # Execution Instructions
 1. Analyze the event in the context of your persona, values, and background.

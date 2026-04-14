@@ -5,9 +5,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 from langgraph.graph.message import add_messages
 from typing_extensions import TypedDict, Annotated
-from db import initialize_redis
 from llm.factory import LLMConfig, LLMFactory, LLMProvider
-from tools.definition import make_decision, post_social_media, chat_with_agent
+from tools.definition import make_decision, post_social_media
 from prompts import AGENT_EXECUTION_PROMPT
 
 
@@ -25,14 +24,12 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
     """
     Build a LangGraph subgraph for a single agent's tool-calling execution phase.
     
-    The agent can call three tools:
+    The agent can call two tools:
     - make_decision: Terminating tool
     - post_social_media: Terminating tool
-    - chat_with_agent: Continuing tool (can loop if end_conversation=False)
     """
     
-    # Bind the three tools to the LLM
-    tools = [make_decision, post_social_media, chat_with_agent]
+    tools = [make_decision, post_social_media]
     llm_with_tools = llm.bind_tools(tools)
     
     def agent_node(state: AgentExecutionState) -> AgentExecutionState:
@@ -40,8 +37,7 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
         The main agent node: invoke the LLM with tools and current message history.
         """
         agent_name = agent_data.get("name", agent_id)
-        
-        # Format relations for the prompt
+
         relations = agent_data.get("relations", {})
         relations_str = ""
         if relations:
@@ -50,8 +46,7 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
                                        for rel_name in [agent_data.get("name", rel_id)]])  # Use relation name if available
         else:
             relations_str = "No known contacts"
-        
-        # Build the system prompt
+ 
         system_prompt = AGENT_EXECUTION_PROMPT.format(
             agent_name=agent_name,
             agent_persona=agent_data.get("persona", "Average citizen"),
@@ -96,16 +91,10 @@ def _build_agent_executor_graph(llm, agent_id: str, event_id: str, event_descrip
             return "tools"
 
         return "end"
-    
-    
-    # Build the state graph
+
     graph = StateGraph(AgentExecutionState)
-    
-    # Add nodes
     graph.add_node("agent", agent_node)
     graph.add_node("tools", tools_node)
-    
-    # Add edges
     graph.add_edge(START, "agent")
     graph.add_conditional_edges("agent", should_continue, {"tools": "tools", "end": END})
     graph.add_edge("tools", END)

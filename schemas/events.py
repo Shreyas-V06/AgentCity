@@ -1,5 +1,5 @@
 from pydantic import BaseModel,Field
-from typing import Literal,List
+from typing import Literal,List,Union
 
 class Event:
     """
@@ -12,14 +12,14 @@ class Event:
     - agent_id: A unique identifier for the agent experiencing the event, linking the event to a specific agent profile.
     """
     event_id: str
-    event_description: List[str]
+    event_description: Union[str, List[str]]
     timeline: Literal['L1', 'L2', 'L3']
     agent_id: str
 
     def __init__(
         self,
         event_id: str,
-        event_description: List[str],
+        event_description: Union[str, List[str]],
         timeline: Literal['L1', 'L2', 'L3'],
         agent_id: str
     ):
@@ -46,7 +46,7 @@ class EventBase(BaseModel):
     - agent_id: A unique identifier for the agent experiencing the event, linking the event to a specific agent profile.
     """
     
-    event_description:str = Field(
+    event_description: Union[str, List[str]] = Field(
         ...,
         description=(
             "A vivid, second-person 'event' representing a direct and highly probable consequence of the "

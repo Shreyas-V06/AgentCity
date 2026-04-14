@@ -76,3 +76,12 @@ def print_base_reactions(reactions):
         print(f"Reaction : {r['base_reaction']}")
         print()
 
+def generate_agent_data(agent_id: str) -> dict:
+    """
+    Fetches agent data as a dictionary from Redis for the given agent_id.
+    """
+    redis_client = initialize_redis()
+    raw = redis_client.get(f"agent:{agent_id}")
+    if raw:
+        return json.loads(raw)
+    return {}
