@@ -100,13 +100,13 @@ def node_1_screening_agents(state: MasterSimulatorState) -> Dict[str, Any]:
     print(f"✓ Policy vector obtained: {policy_vector}")
     
     # Step 2: Initialize screener with exactly 15 agents
-    print(f"\n2. Screening exactly 15 agents based on policy vector...")
+    print(f"\n2. Screening exactly 5 agents based on policy vector...")
     policy_weight = policy_vector
     
     agent_profiles_path = os.path.join(os.path.dirname(__file__), "agent_profiles.json")
     screen_config = ScreenConfig(
         policy_weight=policy_weight,
-        population_size=15,  # Screen exactly 15 agents
+        population_size=5,  # Screen exactly 15 agents
         profile_path=agent_profiles_path
     )
     
@@ -215,6 +215,14 @@ def node_3_base_reaction_generation(state: MasterSimulatorState) -> Dict[str, An
     try:
         base_reactions = generate_base_reactions(event_list_objects, llm)
         print(f"✓ Generated {len(base_reactions)} base reactions")
+        
+        from db import initialize_redis
+        import json
+        redis_client = initialize_redis()
+        for reaction in base_reactions:
+            simulation_id = state.get("simulation_id", "unknown_sim")
+            key = f"base_reaction:{simulation_id}:{reaction.get('event_id')}:{reaction.get('agent_id')}"
+            redis_client.set(key, json.dumps(reaction))
         
         # Print reaction summary
         for i, reaction in enumerate(base_reactions[:3], 1):
