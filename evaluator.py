@@ -76,7 +76,7 @@ def run_evaluation():
         print("No base reactions found to evaluate.")
         return
         
-    config = LLMConfig(provider=LLMProvider.GROQ, model_name="llama-3.3-70b-versatile", temperature=0.1)
+    config = LLMConfig(provider=LLMProvider.GROQ, model_name="openai/gpt-oss-120b", temperature=0.1)
     llm = LLMFactory.build(config)
     
     graph = build_evaluation_graph(llm)

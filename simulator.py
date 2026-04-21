@@ -92,21 +92,21 @@ def node_1_screening_agents(state: MasterSimulatorState) -> Dict[str, Any]:
     
     # Step 1: Vectorize policy text to get policy vector
     print(f"\n1. Vectorizing policy text...")
-    llm_config = LLMConfig(provider=LLMProvider.GROQ, model_name="llama-3.3-70b-versatile")
+    llm_config = LLMConfig(provider=LLMProvider.GROQ, model_name="openai/gpt-oss-120b")
     llm = LLMFactory.build(llm_config)
     
     # Use vectorize_policy method to convert policy to vector
     policy_vector = vectorize_policy(llm, policy_text)
     print(f"✓ Policy vector obtained: {policy_vector}")
     
-    # Step 2: Initialize screener with exactly 15 agents
-    print(f"\n2. Screening exactly 5 agents based on policy vector...")
+    # Step 2: Initialize screener
+    print(f"\n2. Screening exactly agents based on policy vector...")
     policy_weight = policy_vector
     
     agent_profiles_path = os.path.join(os.path.dirname(__file__), "agent_profiles.json")
     screen_config = ScreenConfig(
         policy_weight=policy_weight,
-        population_size=5,  # Screen exactly 15 agents
+        population_size=5, 
         profile_path=agent_profiles_path
     )
     
@@ -530,6 +530,15 @@ def run_master_simulator(policy_text: str) -> str:
     Returns:
         simulation_id: The ID of the completed simulation
     """
+    # Clear Redis data before starting new simulation
+    try:
+        from db import initialize_redis
+        redis_client = initialize_redis()
+        redis_client.flushall()
+        print("✓ Cleared all Redis data")
+    except Exception as e:
+        print(f"⚠️ Error clearing Redis data: {e}")
+
     # Generate simulation ID and timestamp
     simulation_id = f"sim_{uuid.uuid4().hex[:16]}"
     timestamp = datetime.now().isoformat()
